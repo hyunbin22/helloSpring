@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="member">
+
+	<!-- hobby가 배열이기 때문에 등록해줌 -->
+	<resultMap type="member" id="memberMap">
+		<result column="hobby" property="hobby" typeHandler="arrType"/>
+	</resultMap>
+
+	<!-- 멤버 한명 선택 -->
+	<select id="selectMemberOne" parameterType="member" resultMap="memberMap">
+		select * from member where userId=#{userId}
+	</select>
+	
+	<!-- 회원가입 -->
+	<insert id="insertMember" parameterType="member">
+		insert into member values(#{userId},#{password},#{userName},#{gender},#{age},#{email},#{phone},#{address},#{hobby, typeHandler=arrType},default)
+	</insert>
+</mapper>

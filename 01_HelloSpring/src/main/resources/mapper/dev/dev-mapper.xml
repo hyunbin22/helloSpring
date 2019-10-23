@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="dev">
+   
+   <insert id="insertDev" parameterType="dev">
+      insert into dev values(seq_dev_no.nextval, #{devName}, #{devAge}, #{devEmail}, #{devGender}, 
+         <!-- foreach 사용하여 배열 집어넣기 -->
+         <!-- <foreach collection="devLang" item="lang" separator="," open="'" close="'">
+            ${lang}
+         </foreach> -->
+         <!-- typeHandler 사용 배열 집어넣기 -->
+         #{devLang, typeHandler=arrType}
+      )
+   </insert>
+   
+   <resultMap type="dev" id="devMap">
+         <result column="devlang" property="devLang" typeHandler="arrType"/>
+   </resultMap>
+   <select id="selectDevList" resultMap="devMap">
+         SELECT * FROM DEV
+   </select>
+   
+   <delete id="deleteDev" parameterType="_int">
+   		DELETE FROM DEV WHERE DEVNO = #{devNo}
+   
+   </delete>
+</mapper>

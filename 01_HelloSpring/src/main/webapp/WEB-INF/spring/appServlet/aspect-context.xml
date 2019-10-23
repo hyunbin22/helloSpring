@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
+	<!-- aspect객체 bean으로 등록하기 -->
+	<!-- <bean id="loggerAspect" class="com.kh.spring.common.aop.LoggerAspect"/>
+	
+	위에 등록된 aspect객체를 이용하여 aop를 적용함
+	<aop:config>
+		<aop:aspect ref="loggerAspect">
+			execution(* com.kh.spring.memo..*(..)) : 패키지 밑에있는 모든 클래스중에서 모든 메소드(매개변수있든없든)
+			execution에 지정된 메소드 실행하기 전/후에 loggerAdvice 실행해!
+			<aop:pointcut expression="execution(* com.kh.spring.memo.model.dao..*(..))" id="loggerTest"/> dao에 있는 모든 클래스
+			<aop:around method="loggerAdvice" pointcut-ref="loggerTest"/>
+			<aop:before method="before" pointcut-ref="loggerTest"/>
+		</aop:aspect>
+	</aop:config> -->
+	
+	<!-- 어노테이션방식 aop 적용하기 -->
+	<aop:aspectj-autoproxy/>
+
+</beans>

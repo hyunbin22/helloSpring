@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
+	
+	<!-- Enables the Spring MVC @Controller programming model -->
+	<annotation-driven />
+
+	<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources directory -->
+	<resources mapping="/resources/**" location="/resources/" />
+
+	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
+	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<beans:property name="prefix" value="/WEB-INF/views/" />	<!-- return되서 돌아오는값 앞에 붙음 -->
+		<beans:property name="suffix" value=".jsp" />				<!-- return되서 돌아오는값 뒤에 붙음 -->
+	</beans:bean>
+	
+	<context:component-scan base-package="com.kh.spring" />
+	
+	<!-- 인터셉터등록하기 -->
+	<interceptors><!-- 로그인 됐는지 확인하는 인터셉터 -->
+		<interceptor>
+			<mapping path="/demo/*"/> <!-- /** 전부다 !! all !! --><!-- /member/* : 첫시작은 member인거 전부 --> <!-- /demo/* : demo로 시작하는애들 실행할때 이 인터셉터가 실행됨 -->
+			<mapping path="/board/*"/>
+			<!-- <exclude-mapping path="/member/*"/> -->	<!-- 여기에 있는 매핑값들은 제외하고 인터셉터 실행해라 -->
+			<beans:bean id="loggerInterceptor" class="com.kh.spring.common.interceptor.LoggerInterceptor"/>
+		</interceptor>
+	</interceptors>
+	
+	<!-- 파일이 넘어오면 그 파일을 처리해줄 Resolver -->
+	<beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<beans:property name="maxUploadSize" value="10485760"/>	<!-- 업로드파일 버퍼 사이즈 지정, 10485760 : 10메가 -->
+	</beans:bean>
+	
+	<!-- jsonView 등록하기 -->
+	<!-- modelAndView로 jsonView를 등록했을때 자동으로 jsonView의 객체로 전달해줌.-->
+	<beans:bean id="viewResolver" class="org.springframework.web.servlet.view.BeanNameViewResolver">
+		<beans:property name="order" value="1"/>	<!-- 우선순위 -->
+	</beans:bean>
+	<beans:bean id="jsonView" class="net.sf.json.spring.web.servlet.view.JsonView">
+	</beans:bean>
+	
+	<!-- jackson 등록 -->
+	<beans:bean id="jacksonMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
+	<beans:bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+		<beans:property name="messageConverters">
+			<beans:list>
+				<beans:ref bean="jacksonMessageConverter"/>	<!-- @ResponseBody표시가 있는애들은 이 converter를 이용해서 반환해라 -->
+			</beans:list>
+		</beans:property>
+	</beans:bean>
+		
+	
+</beans:beans>
+
+
+
+
+
+
+
+
+
+
+
+
+

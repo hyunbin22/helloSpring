@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd" >
+<configuration>
+	<typeAliases>
+		<typeAlias type="com.kh.spring.demo.model.vo.Dev" alias="dev"/>
+		<typeAlias type="com.kh.spring.member.model.vo.Member" alias="member"/>
+		<typeAlias type="com.kh.spring.common.ArrayTypeHandler" alias="arrType"/>
+	</typeAliases>
+
+</configuration>
