@@ -48,6 +48,15 @@
                      </div>
                    </li>
                    <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/memo/memo.do">메모</a></li>
+                   <c:if test="${not empty loginMember }">
+                        <li class="nav-item"><a class="nav-link"
+                        href="javascript:chatting();">화상채팅</a></li>
+                     </c:if>
+                     <script>
+                        function chatting(){
+                           open("${path}/viewChatting.do","_blank","width:100 height:100")
+                        }
+                     </script>
 			    </ul>
 			    <c:if test="${empty loginMember }">
 				    <button class="btn btn-outline-success my-2 my-sm-0" type="button" data-toggle="modal" 
