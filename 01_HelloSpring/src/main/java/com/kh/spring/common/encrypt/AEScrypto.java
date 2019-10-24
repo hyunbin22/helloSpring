@@ -16,7 +16,7 @@ import javax.crypto.SecretKey;
 
 import org.springframework.stereotype.Component;
 
-@Component	//bean으로 등록
+/*@Component*/	//bean으로 등록
 public class AEScrypto implements MyEncrypt{
 	//자바는 기본적으로 암호화객체를 API로 제공하고 있음.
 	//javax.crypto패키지에서 암호화 관련 내용을 제공
