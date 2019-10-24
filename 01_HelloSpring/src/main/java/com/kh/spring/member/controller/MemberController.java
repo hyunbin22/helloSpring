@@ -15,10 +15,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kh.spring.board.model.service.BoardService;
+import com.kh.spring.common.encrypt.MyEncrypt;
 import com.kh.spring.member.model.service.MemberService;
 import com.kh.spring.member.model.vo.Member;
 
@@ -34,39 +36,41 @@ public class MemberController {
 	BoardService bService;
 	@Autowired
 	BCryptPasswordEncoder pwEncoder;
+	@Autowired
+	MyEncrypt enc;
 
 	@RequestMapping("/member/checkId.do")
-	@ResponseBody
-	public String responseBody(String userId, Model model)throws JsonProcessingException {
-		
-		Member m=new Member();
-		m.setUserId(userId);
-		m=service.selectMemberOne(m);
-		//jackson gson과 비슷한역활을 함. 
-		ObjectMapper mapper=new ObjectMapper();
-		List<Map<String,String>> list=bService.selectList(1,5);
-		return mapper.writeValueAsString(list);	
-		
-		
-	}
-	
-	
-	/* viewResolver(jsonView)를 통해서 ajax처리하는 방법 */
-//	public ModelAndView ajaxViewResolver(String userId,ModelAndView mv) {
+//	@ResponseBody
+//	public String responseBody(String userId, Model model)throws JsonProcessingException {
+//		
 //		Member m=new Member();
 //		m.setUserId(userId);
 //		m=service.selectMemberOne(m);
-//		//Member member=service.selectMemberOne(m);//객체넘기기
+//		//jackson gson과 비슷한역활을 함. 
+//		ObjectMapper mapper=new ObjectMapper();
+//		List<Map<String,String>> list=bService.selectList(1,5);
+//		return mapper.writeValueAsString(list);	
 //		
-//		boolean isUsable=(m!=null&&m.getUserId()!=null)?false:true;
-//		//mv.addObject("member",member);//JSONObject, 객체말고 단일값만 전송
-//		//JSONArray.add()
-//		mv.addObject("userId","ghdkfhsd");
 //		
-//		mv.addObject("isUsable",isUsable);
-//		mv.setViewName("jsonView");//명칭을 반드시 jsonView라고 작성을 해야함.!
-//		return mv;
 //	}
+	
+	
+	/* viewResolver(jsonView)를 통해서 ajax처리하는 방법 */
+	public ModelAndView ajaxViewResolver(String userId,ModelAndView mv) {
+		Member m=new Member();
+		m.setUserId(userId);
+		m=service.selectMemberOne(m);
+		//Member member=service.selectMemberOne(m);//객체넘기기
+		
+		boolean isUsable=(m!=null&&m.getUserId()!=null)?false:true;
+		//mv.addObject("member",member);//JSONObject, 객체말고 단일값만 전송
+		//JSONArray.add()
+		mv.addObject("userId","ghdkfhsd");
+		
+		mv.addObject("isUsable",isUsable);
+		mv.setViewName("jsonView");//명칭을 반드시 jsonView라고 작성을 해야함.!
+		return mv;
+	}
 	
 	/* ajax통신 stream이용하는 방법 */
 //	public void ajaxStream(String userId, HttpServletResponse res) 
@@ -121,6 +125,13 @@ public class MemberController {
 	public String enrollEnd(Member m, Model model) {
 		
 		m.setPassword(pwEncoder.encode(m.getPassword()));
+		try {
+			m.setEmail(enc.encrypt(m.getEmail()));
+			m.setAddress(enc.encrypt(m.getAddress()));
+			m.setPhone(enc.encrypt(m.getPhone()));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		int result=service.insertMember(m);
 		String msg="";
 		String loc="/";
@@ -147,6 +158,22 @@ public class MemberController {
 		return "redirect:/";
 	}
 	
+	/* 마이페이지 */
+	@RequestMapping("/member/memberView.do")
+	public String memberView(Member m, Model model) {
+		Member result = service.selectMemberOne(m);
+		try {
+			result.setEmail(enc.decrypt(result.getEmail()));
+			result.setPhone(enc.decrypt(result.getPhone()));
+			result.setAddress(enc.decrypt(result.getAddress()));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		model.addAttribute("member", result);
+		return "member/memberView";
+		
+	}
 }
 
 
